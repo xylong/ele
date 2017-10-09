@@ -53,6 +53,7 @@ apiRoutes.get('/ratings', function(req, res) {
   });
 });
 
+app.user('/api', apiRoutes);
 
 const compiler = webpack(webpackConfig)
 
