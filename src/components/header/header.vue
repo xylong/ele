@@ -34,16 +34,15 @@ export default {
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-import '../../common/stylus/mixin'
+// import '../../common/stylus/mixin'
 
 .header
 	color: #fff
 	background: #000
 	.content-wrapper
 		padding: 24px 12px 18px 24px
-		font-size: 0
 		.avatar
-		    display: inline-block
+			display: inline-block
 		.content
 			display: inline-block
 			margin-left: 16px
@@ -54,7 +53,7 @@ import '../../common/stylus/mixin'
 					display: inline-block
 					width: 30px
 					height: 18px
-					bg-image('brand')
+					// bg-image('brand')
 					background-size: 30px 18px
 					background-repeat: no-repeat
 				.name
