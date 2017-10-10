@@ -8,6 +8,8 @@ import sellers from '@/components/sellers/sellers'
 Vue.use(Router)
 
 export default new Router({
+    linkActiveClass: 'active',  // 配置配皮路由高亮样式
+
     routes: [{
         path: '/goods',
         component: goods
@@ -17,5 +19,8 @@ export default new Router({
     }, {
         path: '/sellers',
         component: sellers
+    }, {
+        path: '*',
+        redirect: '/goods'
     }]
 })
