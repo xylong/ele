@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-header></v-header>
+        <v-header :seller="seller"></v-header>
         <div class="tab border-1px">
             <div class="tab-item" v-for="v in menu"><router-link :to="v.url">{{v.name}}</router-link></div>
         </div>
@@ -10,6 +10,9 @@
 
 <script>
 import header from '@/components/header/header.vue'
+
+const ERR_OK = 0
+
 export default {
     name: 'app',
     data() {
@@ -23,8 +26,19 @@ export default {
             }, {
                 url: '/sellers',
                 name: '商家'
-            }]
+            }],
+
+            seller: {}
         }
+    },
+    mounted() {
+        this.$http.get('/api/seller').then(req => {
+            if (req.body.errno === ERR_OK) {
+                this.seller = req.body.data;
+            }
+        }, req => {
+            // error callback
+        })
     },
     components: {
         'v-header': header
