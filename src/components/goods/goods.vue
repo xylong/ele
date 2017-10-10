@@ -1,12 +1,11 @@
 <template lang="html">
     <div>
-        header
+        商品
     </div>
 </template>
 
 <script>
 export default {
-    name: 'header'
 }
 </script>
 

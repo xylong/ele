@@ -1,12 +1,11 @@
 <template lang="html">
     <div>
-        header
+        评论
     </div>
 </template>
 
 <script>
 export default {
-    name: 'header'
 }
 </script>
 

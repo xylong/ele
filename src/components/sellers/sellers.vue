@@ -1,12 +1,9 @@
 <template lang="html">
-    <div>
-        header
-    </div>
+    <div>商家</div>
 </template>
 
 <script>
 export default {
-    name: 'header'
 }
 </script>
 
