@@ -12,17 +12,17 @@
         		<div class="description">
         			{{seller.description}}/{{seller.deliveryTime}}分钟送达
         		</div>
-        		<div class="support" v-if="seller.supports">
+        		<div v-if="seller.supports" class="support">
         			<span class="icon" :class="classMap[seller.supports[0].type]"></span>
         			<span class="text" v-text="seller.supports[0].description"></span>
         		</div>
         	</div>
-        	<div class="support-count" v-if="seller.supports">
+        	<div v-if="seller.supports" class="support-count" @click="showDetail">
         		<span class="count" v-text="seller.supports.length + '个'"></span>
         		<i class="icon-keyboard_arrow_right"></i>
         	</div>
         </div>
-        <div class="bulletin-wrapper">
+        <div class="bulletin-wrapper" @click="showDetail">
         	<span class="bulletin-title"></span>
         	<span class="bulletin-text" v-text="seller.bulletin"></span>
         	<i class="icon-keyboard_arrow_right"></i>
@@ -30,6 +30,7 @@
         <div class="background">
         	<img :src="seller.avatar" width="100%" height="100%">
         </div>
+        <div v-show="detailShow" class="detail"></div>
     </div>
 </template>
 
@@ -39,6 +40,16 @@ export default {
 	props: {
 		seller: {
 			type: Object
+		}
+	},
+	data() {
+		return {
+			detailShow: false
+		}
+	},
+	methods: {
+		showDetail(){
+			this.detailShow = true
 		}
 	},
 	mounted() {
@@ -52,6 +63,7 @@ export default {
 
 .header
 	position: relative
+	overflow: hidden
 	color: #fff
 	background: rgba(7, 17, 27, 0.5)
 	.content-wrapper
@@ -137,7 +149,7 @@ export default {
 		.bulletin-title
 			display: inline-block
 			vertical-align: top
-			margin-top: 7px
+			margin-top: 8px
 			width: 22px
 			height: 12px
 			bg-image('bulletin')
@@ -160,4 +172,13 @@ export default {
 		height: 100%
 		z-index: -1
 		filter: blur(10px)
+	.detail
+		position: fixed
+		z-index: 100%
+		top: 0
+		left: 0
+		width: 100%
+		height: 100%
+		overflow: auto
+		background: rgba(7, 17, 27, 0.8)
 </style>
