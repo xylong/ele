@@ -36,7 +36,8 @@
         <div v-show="detailShow" class="detail">
         	<div class="detail-wrapper clearfix">
         		<div class="detail-main">
-					<h1 class="name" v-text="seller.name"></h1>        		 
+					<h1 class="name" v-text="seller.name"></h1>
+					<star :size="48" :score="seller.score"></star>
         		</div>
         	</div>
         	<div class="detail-close">
@@ -48,6 +49,8 @@
 </template>
 
 <script>
+import star from '@/components/star/star'
+
 export default {
 	name: 'header',
 	props: {
@@ -64,6 +67,9 @@ export default {
 		showDetail(){
 			this.detailShow = true
 		}
+	},
+	components:{
+		star
 	},
 	mounted() {
 		this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee']
