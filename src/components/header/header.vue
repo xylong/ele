@@ -17,6 +17,10 @@
         			<span class="text" v-text="seller.supports[0].description"></span>
         		</div>
         	</div>
+        	<div class="support-count" v-if="seller.supports">
+        		<span class="count" v-text="seller.supports.length"></span>
+        		<i class="icon-keyboard_arrow_right"></i>
+        	</div>
         </div>
         <div class="bulletin-wrapper"></div>
     </div>
@@ -76,7 +80,7 @@ export default {
 			.support
 				.icon
 					display: inline-block
-					vertical-align: bottom
+					vertical-align: top
 					width: 12px
 					height: 12px
 					margin-right: 4px
@@ -90,9 +94,9 @@ export default {
 						bg-image('guarantee_1')
 					&.invoice
 						bg-image('invoice_1')
-					&special
+					&.special
 						bg-image('special_1')
 				.text
 					line-height: 12px
-					font-size: 12px
+					font-size: 10px
 </style>
