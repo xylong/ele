@@ -1,6 +1,6 @@
 <template lang="html">
 	<div class="goods">
-		<div class="menu-wrapper">
+		<div class="menu-wrapper" ref="menuWrapper">
 			<ul>
 				<li v-for="item in goods" class="menu-item">
 					<span class="text border-1px">
@@ -9,7 +9,7 @@
 				</li>
 			</ul>
 		</div>
-		<div class="foods-wrapper">
+		<div class="foods-wrapper" ref="foodsWrapper">
 			<ul>
 				<li v-for="item in goods" class="food-list">
 					<h1 class="title" v-text="item.name"></h1>
@@ -22,12 +22,10 @@
 								<h2 class="name" v-text="food.name"></h2>
 								<p class="desc" v-text="food.description"></p>
 								<div class="extra">
-									<span class="count">月售{{food.sellCount}}</span>
-									<span>好评率{{food.rating}}%</span>
+									<span class="count">月售{{food.sellCount}}</span><span>好评率{{food.rating}}%</span>
 								</div>
 								<div class="price">
-									<span class="now">￥{{food.price}}</span>
-									<span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
+									<span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
 								</div>
 							</div>
 						</li>
@@ -39,6 +37,8 @@
 </template>
 
 <script>
+import BScroll from 'better-scroll'
+
 const ERR_OK = 0
 
 export default {
@@ -54,10 +54,19 @@ export default {
 			classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee']
 		}
 	},
+	methods: {
+		initScroll() {
+			this.menuScroll = new BScroll(this.$refs.menuWrapper, {})
+			this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {})
+		}
+	},
 	mounted() {
 		this.$http.get('/api/goods').then(req => {
 			if (req.body.errno === ERR_OK) {
 				this.goods = req.body.data;
+				this.$nextTick(() => {
+					this.initScroll()
+				})
 			}
 		}, req => {
 			// error callback
@@ -134,7 +143,7 @@ export default {
 			.content
 				flex 1
 				.name
-					margin 2px 0 18px 0
+					margin 2px 0 8px 0
 					height 14px
 					line-height 14px
 					font-size 14px
@@ -144,17 +153,18 @@ export default {
 					font-size 10px
 					color rgb(147, 153, 159)
 				.desc
+					line-height 12px
 					margin-bottom 8px
 				.extra
-					&.count
+					.count
 						margin-right 12px
 				.price
 					font-weight 700
 					line-height 24px
 					.now
-						margin-right 18px
+						margin-right 8px
 						font-size 14px
-						color rgb(240 20 20 )
+						color rgb(240 20 20)
 					.old
 						text-decoration line-through
 						font-size 10px
