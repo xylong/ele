@@ -2,7 +2,7 @@
 	<div class="goods">
 		<div class="menu-wrapper" ref="menuWrapper">
 			<ul>
-				<li v-for="item in goods" class="menu-item">
+				<li v-for="(item, index) in goods" class="menu-item" :class="{'current': currentIndex===index}">
 					<span class="text border-1px">
 						<span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
 					</span>
@@ -11,7 +11,7 @@
 		</div>
 		<div class="foods-wrapper" ref="foodsWrapper">
 			<ul>
-				<li v-for="item in goods" class="food-list">
+				<li v-for="item in goods" class="food-list food-list-hook">
 					<h1 class="title" v-text="item.name"></h1>
 					<ul>
 						<li v-for="food in item.foods" class="food-item border-1px">
@@ -51,13 +51,44 @@ export default {
 	data() {
 		return {
 			goods: {},
-			classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee']
+			classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee'],
+			listHeight: [],
+			scrollY: 0
+		}
+	},
+	computed:{
+		currentIndex() {
+			for (var i = 0, len = this.listHeight.length; i < len; i++) {
+				let height1 = this.listHeight[i],
+					height2 = this.listHeight[i + 1];
+				if (!height2 || (this.scrollY > height1 && this.scrollY < height2)) {
+					return i;
+				}
+			}
+			return 0;
 		}
 	},
 	methods: {
+		// init better-scroll
 		initScroll() {
-			this.menuScroll = new BScroll(this.$refs.menuWrapper, {})
-			this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {})
+			this.menuScroll = new BScroll(this.$refs.menuWrapper, {});
+			this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+				probeType: 3
+			});
+			// 监听实时滚动位置
+			this.foodsScroll.on('scroll', pos => {
+				this.scrollY = Math.abs(Math.round(pos.y));
+			});
+		},
+		// 计算不同分类的列表高度
+		calculateHeight() {
+			let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook'),
+				height = 0;
+			this.listHeight.push(height);
+			for (var i = 0, len = foodList.length; i < len; i++) {
+				height += foodList[i].clientHeight;
+				this.listHeight.push(height);
+			}
 		}
 	},
 	mounted() {
@@ -65,8 +96,9 @@ export default {
 			if (req.body.errno === ERR_OK) {
 				this.goods = req.body.data;
 				this.$nextTick(() => {
-					this.initScroll()
-				})
+					this.initScroll();
+					this.calculateHeight();
+				});
 			}
 		}, req => {
 			// error callback
@@ -95,6 +127,14 @@ export default {
 			width 56px
 			padding 0 12px
 			line-height 14px
+			&.current
+				position relative
+				z-index 10
+				margin-top -1px
+				background #fff
+				font-weight 700
+				.text
+					border-none()
 			.icon
 				display inline-block
 				vertical-align top
@@ -135,7 +175,7 @@ export default {
 			padding-bottom 18px
 			border-1px(rgba(7, 17, 27, 0.1))
 			&:last-child
-				border-none
+				border-none()
 				margin-bottom 0
 			.icon
 				flex 0 0 57px
