@@ -2,7 +2,7 @@
 	<div class="goods">
 		<div class="menu-wrapper" ref="menuWrapper">
 			<ul>
-				<li v-for="(item, index) in goods" class="menu-item" :class="{'current': currentIndex===index}">
+				<li v-for="(item, index) in goods" class="menu-item" :class="{'current': currentIndex===index}" @click="selectMenu(index)">
 					<span class="text border-1px">
 						<span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
 					</span>
@@ -61,7 +61,7 @@ export default {
 			for (var i = 0, len = this.listHeight.length; i < len; i++) {
 				let height1 = this.listHeight[i],
 					height2 = this.listHeight[i + 1];
-				if (!height2 || (this.scrollY > height1 && this.scrollY < height2)) {
+				if (!height2 || (this.scrollY >= height1 && this.scrollY < height2)) {
 					return i;
 				}
 			}
@@ -71,7 +71,9 @@ export default {
 	methods: {
 		// init better-scroll
 		initScroll() {
-			this.menuScroll = new BScroll(this.$refs.menuWrapper, {});
+			this.menuScroll = new BScroll(this.$refs.menuWrapper, {
+				click: true
+			});
 			this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
 				probeType: 3
 			});
@@ -80,15 +82,23 @@ export default {
 				this.scrollY = Math.abs(Math.round(pos.y));
 			});
 		},
-		// 计算不同分类的列表高度
+		// 计算高度
 		calculateHeight() {
-			let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook'),
+			let foodList = this.getFoodsHook(),
 				height = 0;
 			this.listHeight.push(height);
 			for (var i = 0, len = foodList.length; i < len; i++) {
 				height += foodList[i].clientHeight;
 				this.listHeight.push(height);
 			}
+		},
+		selectMenu(index) {
+			let foodList = this.getFoodsHook(),
+				el = foodList[index];
+			this.foodsScroll.scrollToElement(el, 300);
+		},
+		getFoodsHook(){
+			return this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
 		}
 	},
 	mounted() {
