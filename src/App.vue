@@ -4,7 +4,7 @@
         <div class="tab border-1px">
             <div class="tab-item" v-for="v in menu"><router-link :to="v.url">{{v.name}}</router-link></div>
         </div>
-        <router-view></router-view>
+        <router-view :seller="seller"></router-view>
     </div>
 </template>
 
