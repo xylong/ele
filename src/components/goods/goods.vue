@@ -33,11 +33,13 @@
 				</li>
 			</ul>
 		</div>
+		<shopcart></shopcart>
 	</div>
 </template>
 
 <script>
 import BScroll from 'better-scroll'
+import shopcart from '@/components/shopcart/shopcart'
 
 const ERR_OK = 0
 
@@ -99,6 +101,9 @@ export default {
 		getFoodsHook(){
 			return this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
 		}
+	},
+	components: {
+		shopcart
 	},
 	mounted() {
 		this.$http.get('/api/goods').then(req => {
