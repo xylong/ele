@@ -52,7 +52,7 @@ export default {
 		return {
 			goods: {},
 			classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee'],
-			listHeight: [],
+			listHeight: [0],
 			scrollY: 0
 		}
 	},
@@ -86,7 +86,6 @@ export default {
 		calculateHeight() {
 			let foodList = this.getFoodsHook(),
 				height = 0;
-			this.listHeight.push(height);
 			for (var i = 0, len = foodList.length; i < len; i++) {
 				height += foodList[i].clientHeight;
 				this.listHeight.push(height);
