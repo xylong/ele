@@ -81,6 +81,7 @@ export default {
 				click: true
 			});
 			this.foodsScroll = new BScroll(this.$refs.foodsWrapper, {
+				click: true,
 				probeType: 3
 			});
 			// 监听实时滚动位置
