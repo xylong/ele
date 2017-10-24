@@ -21,7 +21,7 @@
 		},
 		methods: {
 			addCart() {
-				this.food.count++;
+				this.food.count++
 			},
 			decreaseCart() {
 				this.food.count--
