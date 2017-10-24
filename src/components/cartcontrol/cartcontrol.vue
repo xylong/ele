@@ -1,16 +1,17 @@
 <template lang="html">
 	<div class="cartcontrol">
 		<transition name="move">
-			<div class="cart-decrease icon-remove_circle_outline" @click="decreaseCart" v-show="count">
+			<div class="cart-decrease icon-remove_circle_outline" @click="decreaseCart" v-show="food.count > 0">
 				<span class="inner icon-remove_circle_outline"></span>
 			</div>
 		</transition>
-		<div class="cart-count" v-show="count" v-text="count"></div>
+		<div class="cart-count" v-show="food.count > 0" v-text="food.count"></div>
 		<div class="cart-add icon-add_circle" @click="addCart"></div>
 	</div>
 </template>
 
 <script>
+	import Vue from 'vue'
 	export default{
 		name: 'cartcontrol',
 		props: {
@@ -18,20 +19,18 @@
 				type: Object
 			}
 		},
-		data() {
-			return {
-				count: 0
-			}
-		},
 		methods: {
 			addCart() {
-				this.count++
+				this.food.count++;
 			},
 			decreaseCart() {
-				this.count--
+				this.food.count--
 			}
 		},
 		mounted() {
+			if (!this.food.hasOwnProperty('count')) {
+				Vue.set(this.food, 'count', 0)
+			}
 		}
 	}
 </script>
