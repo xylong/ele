@@ -30,10 +30,34 @@
 			</div>
 		</div>
 		<!-- 小球end -->
+
+		<!-- 详情 -->
+		<div class="shopcart-list" v-show="listShow">
+			<div class="list-header">
+				<h1 class="title">购物车</h1>
+				<span class="empty">清空</span>
+			</div>
+			<div class="list-content">
+				<ul>
+					<li class="food" v-for="food in selectFoods">
+						<span class="name" v-text="food.name"></span>
+						<div class="price">
+							<span v-text="'￥' + food.price * food.count"></span>
+						</div>
+						<div class="cartcontrol-wrapper">
+							<carcontrol :food="food"></carcontrol>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- 详情end -->
 	</div>
 </template>
 
 <script type="text/javascript">
+	import cartcontrol from '@/components/cartcontrol/cartcontrol'
+
 	export default {
 		name: 'shopcart',
 		props: {
@@ -145,7 +169,10 @@
 					el.style.display = 'none';
 				}
 			}
-		}
+		},
+		components: {
+			cartcontrol
+		},
 	}
 </script>
 
