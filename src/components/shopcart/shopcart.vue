@@ -1,6 +1,6 @@
 <template lang="html">
 	<div class="shopcart">
-		<div class="content">
+		<div class="content" @click="toggleList">
 			<div class="content-left">
 				<div class="logo-wrapper">
 					<div class="logo" :class="{'highlight': totalCount > 0}">
@@ -31,27 +31,29 @@
 		</div>
 		<!-- 小球end -->
 
-		<!-- 详情 -->
-		<div class="shopcart-list" v-show="listShow">
-			<div class="list-header">
-				<h1 class="title">购物车</h1>
-				<span class="empty">清空</span>
+		<!-- 购物车 -->
+		<transition name="fold">
+			<div class="shopcart-list" v-show="listShow">
+				<div class="list-header">
+					<h1 class="title">购物车</h1>
+					<span class="empty">清空</span>
+				</div>
+				<div class="list-content">
+					<ul>
+						<li class="food" v-for="food in selectFoods">
+							<span class="name" v-text="food.name"></span>
+							<div class="price">
+								<span v-text="'￥' + food.price * food.count"></span>
+							</div>
+							<div class="cartcontrol-wrapper">
+								<cartcontrol :food="food"></cartcontrol>
+							</div>
+						</li>
+					</ul>
+				</div>
 			</div>
-			<div class="list-content">
-				<ul>
-					<li class="food" v-for="food in selectFoods">
-						<span class="name" v-text="food.name"></span>
-						<div class="price">
-							<span v-text="'￥' + food.price * food.count"></span>
-						</div>
-						<div class="cartcontrol-wrapper">
-							<carcontrol :food="food"></carcontrol>
-						</div>
-					</li>
-				</ul>
-			</div>
-		</div>
-		<!-- 详情end -->
+		</transition>
+		<!-- 购物车end -->
 	</div>
 </template>
 
@@ -89,7 +91,8 @@
 				}, {
 					show: false
 				}, ],
-				dropBalls: []
+				dropBalls: [],
+				fold: true
 			}
 		},
 		computed: {
@@ -119,6 +122,13 @@
 			// 是否结算
 			isSettlement() {
 				return this.totalPrice < this.minPrice;
+			},
+			listShow() {
+				if (!this.totalCount) {
+					this.fold = true;
+					return false;
+				}
+				return (!this.fold);
 			}
 		},
 		methods: {
@@ -168,11 +178,17 @@
 					ball.show = false;
 					el.style.display = 'none';
 				}
+			},
+			toggleList() {
+				if (!this.totalCount) {
+					return;
+				}
+				this.fold = !this.fold;
 			}
 		},
 		components: {
 			cartcontrol
-		},
+		}
 	}
 </script>
 
@@ -275,4 +291,10 @@
 					border-radius 50%
 					background rgb(0, 160, 220)
 					transition all 0.4s linear
+	.shopcart-list
+		position absolute
+		top 0
+		left 0
+		z-index -1
+		width 100%
 </style>
