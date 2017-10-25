@@ -75,7 +75,7 @@ export default {
 		},
 		selectFoods() {
 			let foods = [];
-			this.goods.forEach(good => {
+			[].forEach.call(this.goods, good => {
 				good.foods.forEach(food => {
 					if (food.count > 0) {
 						foods.push(food);
