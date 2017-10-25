@@ -106,12 +106,6 @@ export default {
 <style lang="stylus" rel="stylesheet/stylus">
 @import '../../common/stylus/mixin'
 
-// 淡入淡出过渡动画
-.fade-enter-active, .fade-leave-active
-	transition: opacity 0.5s
-.fade-enter, .fade-leave-to
-	opacity: 0
-
 .header
 	position: relative
 	overflow: hidden
@@ -232,6 +226,11 @@ export default {
 		height: 100%
 		overflow: auto
 		background: rgba(7, 17, 27, 0.8)
+		&.fade-enter-active, &.fade-leave-active
+			transition: all 0.5s
+		&.fade-enter, &.fade-leave-active
+			opacity: 0
+			background: rgba(7, 17, 27, 0)
 		// 高斯模糊(只对ios系统有效)
 		backdrop-filter: blur(10px)
 		.detail-wrapper

@@ -6,13 +6,13 @@
 			</div>
 		</transition>
 		<div class="cart-count" v-show="food.count > 0" v-text="food.count"></div>
-		<div class="cart-add icon-add_circle" @click="addCart"></div>
+		<div class="cart-add icon-add_circle" @click="addCart($event)"></div>
 	</div>
 </template>
 
 <script>
 	import Vue from 'vue'
-	export default{
+	export default {
 		name: 'cartcontrol',
 		props: {
 			food: {
@@ -20,11 +20,12 @@
 			}
 		},
 		methods: {
-			addCart() {
-				this.food.count++
+			addCart(event) {
+				this.food.count++;
+				this.$emit('add', event.target);
 			},
 			decreaseCart() {
-				this.food.count--
+				this.food.count--;
 			}
 		},
 		mounted() {
@@ -37,11 +38,11 @@
 
 <style lang="stylus" rel="stylesheet/stylus">
 .move
-	transform translate3D(0, 0, 0)	// 硬件加速
+	transform translate3d(0, 0, 0)	// 硬件加速
 	transition all 0.4s linear
 .move-enter, .move-leave-to
 	opacity 0
-	transform translate3D(24px, 0, 0)	// // 硬件加速
+	transform translate3d(24px, 0, 0)	// // 硬件加速
 	transform:translateX(24px) rotate(180deg)
 
 .cartcontrol
