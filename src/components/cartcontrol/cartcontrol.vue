@@ -22,7 +22,7 @@
 		methods: {
 			addCart(event) {
 				if (!event._constructed) {
-            		return;
+					return;
 				}
 				this.food.count++;
 				this.$emit('add', event.target);

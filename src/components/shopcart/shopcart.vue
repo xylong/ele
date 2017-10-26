@@ -1,59 +1,67 @@
 <template lang="html">
-	<div class="shopcart">
-		<div class="content" @click="toggleList">
-			<div class="content-left">
-				<div class="logo-wrapper">
-					<div class="logo" :class="{'highlight': totalCount > 0}">
-						<span class="icon-shopping_cart" :class="{'highlight': totalCount > 0}"></span>
+	<div>
+		<div class="shopcart">
+			<div class="content" @click="toggleList">
+				<div class="content-left">
+					<div class="logo-wrapper">
+						<div class="logo" :class="{'highlight': totalCount > 0}">
+							<span class="icon-shopping_cart" :class="{'highlight': totalCount > 0}"></span>
+						</div>
+						<div class="num" v-text="totalCount" v-show="totalCount > 0"></div>
 					</div>
-					<div class="num" v-text="totalCount" v-show="totalCount > 0"></div>
+					<div class="price" :class="{'highlight': totalPrice > 0}" v-text="'¥' + totalPrice"></div>
+					<div class="desc" v-text="'另需配送费 ¥' + deliveryPrice + '元'"></div>
 				</div>
-				<div class="price" :class="{'highlight': totalPrice > 0}" v-text="'¥' + totalPrice"></div>
-				<div class="desc" v-text="'另需配送费 ¥' + deliveryPrice + '元'"></div>
+				<div class="content-right" @click.stop.prevent="pay">
+					<div :class="[isSettlement ? 'not-enough' : 'enough', 'pay']" v-text="payDesc"></div>
+				</div>
 			</div>
-			<div class="content-right">
-				<div :class="[isSettlement ? 'not-enough' : 'enough', 'pay']" v-text="payDesc"></div>
+			<!-- 小球 -->
+			<div class="ball-container">
+				<div v-for="ball in balls">
+					<transition name="drop"
+						@before-enter="beforeDrop"
+						@enter="dropping"
+						@after-enter="afterDrop"
+					>
+					<div class="ball" v-show="ball.show">
+						<div class="inner inner-hook"></div>
+					</div>		
+					</transition>
+				</div>
 			</div>
-		</div>
-		<!-- 小球 -->
-		<div class="ball-container">
-			<div v-for="ball in balls">
-				<transition name="drop"
-					@before-enter="beforeDrop"
-					@enter="dropping"
-					@after-enter="afterDrop"
-				>
-				<div class="ball" v-show="ball.show">
-					<div class="inner inner-hook"></div>
-				</div>		
-				</transition>
-			</div>
-		</div>
-		<!-- 小球end -->
+			<!-- 小球end -->
 
-		<!-- 购物车 -->
-		<transition name="fold">
-			<div class="shopcart-list" v-show="listShow">
-				<div class="list-header">
-					<h1 class="title">购物车</h1>
-					<span class="empty">清空</span>
+			<!-- 购物车 -->
+			<transition name="fold">
+				<div class="shopcart-list" v-show="listShow">
+					<div class="list-header">
+						<h1 class="title">购物车</h1>
+						<span class="empty" @click="empty">清空</span>
+					</div>
+					<div class="list-content" ref="cartList">
+						<ul>
+							<li class="food" v-for="food in selectFoods">
+								<span class="name" v-text="food.name"></span>
+								<div class="price">
+									<span v-text="'￥' + food.price * food.count"></span>
+								</div>
+								<div class="cartcontrol-wrapper">
+									<cartcontrol @add="add2Cart" :food="food"></cartcontrol>
+								</div>
+							</li>
+						</ul>
+					</div>
 				</div>
-				<div class="list-content" ref="listContent">
-					<ul>
-						<li class="food" v-for="food in selectFoods">
-							<span class="name" v-text="food.name"></span>
-							<div class="price">
-								<span v-text="'￥' + food.price * food.count"></span>
-							</div>
-							<div class="cartcontrol-wrapper">
-								<cartcontrol @add="add2Cart" :food="food"></cartcontrol>
-							</div>
-						</li>
-					</ul>
-				</div>
-			</div>
+			</transition>
+			<!-- 购物车end -->
+		</div>
+
+		<!-- 购物车遮罩 -->
+		<transition name="fade">
+			<div class="list-mask" @click="hiddeCart" v-show="listShow"></div>
 		</transition>
-		<!-- 购物车end -->
+		<!-- 购物车遮罩end -->
 	</div>
 </template>
 
@@ -133,7 +141,7 @@
 				if (isShow) {
 					this.$nextTick(() => {
 						if (!this.scroll) {
-							this.scroll = new BScroll(this.$refs.listContent, {
+							this.scroll = new BScroll(this.$refs.cartList, {
 								click: true
 							});
 						} else {
@@ -199,6 +207,19 @@
 			},
 			add2Cart(target) {
 				this.drop(target);
+			},
+			empty() {
+				this.selectFoods.forEach(food => {
+					food.count = 0;
+				});
+			},
+			hiddeCart() {
+				this.fold = true;
+			},
+			pay() {
+				if (this.totalPrice >= this.minPrice) {
+					window.alert(`支付${this.totalPrice}元`)
+				}
 			}
 		},
 		components: {
@@ -359,4 +380,18 @@
 					position absolute
 					right 0
 					bottom 6px
+.list-mask
+	position fixed
+	top 0
+	left 0
+	width 100%
+	height 100%
+	z-index 40
+	backdrop-filter blur(10px)
+	background rgba(7, 17, 27, 0.6)
+	&.fade-enter-active, &fade-leave-active
+		transition all 0.5s
+	&.fade-enter, &fade-leave-active
+		opacity 0
+		background rgba(7, 17, 27, 0)
 </style>
