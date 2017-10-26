@@ -38,7 +38,7 @@
 					<h1 class="title">购物车</h1>
 					<span class="empty">清空</span>
 				</div>
-				<div class="list-content">
+				<div class="list-content" ref="listContent">
 					<ul>
 						<li class="food" v-for="food in selectFoods">
 							<span class="name" v-text="food.name"></span>
@@ -46,7 +46,7 @@
 								<span v-text="'￥' + food.price * food.count"></span>
 							</div>
 							<div class="cartcontrol-wrapper">
-								<cartcontrol :food="food"></cartcontrol>
+								<cartcontrol @add="add2Cart" :food="food"></cartcontrol>
 							</div>
 						</li>
 					</ul>
@@ -58,6 +58,7 @@
 </template>
 
 <script type="text/javascript">
+	import BScroll from 'better-scroll'
 	import cartcontrol from '@/components/cartcontrol/cartcontrol'
 
 	export default {
@@ -128,7 +129,19 @@
 					this.fold = true;
 					return false;
 				}
-				return (!this.fold);
+				let isShow = !this.fold;
+				if (isShow) {
+					this.$nextTick(() => {
+						if (!this.scroll) {
+							this.scroll = new BScroll(this.$refs.listContent, {
+								click: true
+							});
+						} else {
+							this.scroll.refresh();
+						}
+					});
+				}
+				return isShow;
 			}
 		},
 		methods: {
@@ -180,10 +193,12 @@
 				}
 			},
 			toggleList() {
-				if (!this.totalCount) {
-					return;
+				if (this.totalCount) {
+					this.fold = !this.fold;
 				}
-				this.fold = !this.fold;
+			},
+			add2Cart(target) {
+				this.drop(target);
 			}
 		},
 		components: {
@@ -193,6 +208,8 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+@import '../../common/stylus/mixin'
+
 .shopcart
 	position fixed
 	left 0
@@ -295,6 +312,51 @@
 		position absolute
 		top 0
 		left 0
-		z-index -1
 		width 100%
+		z-index -1
+		transform translate3d(0,-100%,0)
+		&.fold-enter-active, &.fold-leave-active
+			transition all 0.5s
+		&.fold-enter, &.fold-leave-active
+			transform translate3d(0, 0, 0)
+		.list-header
+			height 40px
+			line-height 40px
+			padding 0 18px
+			background #f3f5f7
+			border-bottom 1px solid rgba(7, 17, 27, 0.1)
+			.title
+				float left
+				font-size 14px
+				color rgb(7, 17, 27)
+			.empty
+				float right
+				font-size 12px
+				color rgb(0, 160, 220)
+		.list-content
+			padding 0 18px
+			max-height 217px
+			overflow hidden
+			background #fff
+			.food
+				position relative
+				padding 12px 0
+				box-sizing border-box
+				border-1px(rgba(7, 17, 27, 0.1))
+				.name
+					line-height 24px
+					font-size 14px
+					color rgb(7, 17, 27)
+				.price
+					position absolute
+					right 90px
+					bottom 12px
+					line-height 24px
+					font-size 14px
+					font-weight 700
+					color rgb(240, 20, 20)
+				.cartcontrol-wrapper
+					position absolute
+					right 0
+					bottom 6px
 </style>

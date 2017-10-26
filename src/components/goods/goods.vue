@@ -28,7 +28,7 @@
 									<span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
 								</div>
 								<div class="cartcontrol-wrapper">
-									<cartcontrol @add="addCart" :food="food"></cartcontrol>
+									<cartcontrol @add="add2Cart" :food="food"></cartcontrol>
 								</div>
 							</div>
 						</li>
@@ -117,10 +117,7 @@ export default {
 		getFoodsHook() {
 			return this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
 		},
-		addCart(target) {
-			this.drop(target);
-		},
-		drop(target) {
+		add2Cart(target) {
 			// 体验优化，异步执行下落动画
 			this.$nextTick(() => {
 				this.$refs.shopcart.drop(target);

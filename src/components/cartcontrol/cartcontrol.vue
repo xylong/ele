@@ -21,10 +21,16 @@
 		},
 		methods: {
 			addCart(event) {
+				if (!event._constructed) {
+            		return;
+				}
 				this.food.count++;
 				this.$emit('add', event.target);
 			},
 			decreaseCart() {
+				if (!event._constructed) {
+					return;
+				}
 				this.food.count--;
 			}
 		},
@@ -37,14 +43,6 @@
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
-.move
-	transform translate3d(0, 0, 0)	// 硬件加速
-	transition all 0.4s linear
-.move-enter, .move-leave-to
-	opacity 0
-	transform translate3d(24px, 0, 0)	// // 硬件加速
-	transform:translateX(24px) rotate(180deg)
-
 .cartcontrol
 	font-size 0
 	.cart-decrease
@@ -56,6 +54,17 @@
 			line-height 24px
 			font-size 24px
 			color rgb(0, 160, 220)
+			transition all 0.4s linear
+		&.move-enter-active, &.move-leave-active
+			transform translate3d(0, 0, 0)
+			.inner
+				display inline-block
+				transform rotate(0)
+		&.move-enter, &.move-leave-active
+			opacity 0
+			transform translate3d(24px, 0, 0)
+			.inner
+				transform rotate(180deg)
 	.cart-count
 		display inline-block
 		vertical-align top
