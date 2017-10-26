@@ -12,10 +12,10 @@
 			</div>
 			<div class="foods-wrapper" ref="foodsWrapper">
 				<ul>
-					<li v-for="item in goods" @click="selectFood(food, $event)" class="food-list food-list-hook">
+					<li v-for="item in goods" class="food-list food-list-hook">
 						<h1 class="title" v-text="item.name"></h1>
 						<ul>
-							<li v-for="food in item.foods" class="food-item border-1px">
+							<li v-for="food in item.foods" @click="selectFood(food, $event)" class="food-item border-1px">
 								<div class="icon">
 									<img :src="food.icon" width="57" height="57">
 								</div>
@@ -29,7 +29,7 @@
 										<span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
 									</div>
 									<div class="cartcontrol-wrapper">
-										<cartcontrol @add="add2Cart" :food="food"></cartcontrol>
+										<cartcontrol @add="drop" :food="food"></cartcontrol>
 									</div>
 								</div>
 							</li>
@@ -39,7 +39,7 @@
 			</div>
 			<shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" ref="shopcart"></shopcart>
 		</div>
-		<food :food="selectedFood"></food>
+		<food @add="drop" :food="selectedFood" ref="food"></food>
 	</div>
 </template>
 
@@ -115,6 +115,9 @@ export default {
 			}
 		},
 		selectMenu(index) {
+			if (!event._constructed) {
+				return;
+			}
 			let foodList = this.getFoodsHook(),
 				el = foodList[index];
 			this.foodsScroll.scrollToElement(el, 300);
@@ -122,7 +125,7 @@ export default {
 		getFoodsHook() {
 			return this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
 		},
-		add2Cart(target) {
+		drop(target) {
 			// 体验优化，异步执行下落动画
 			this.$nextTick(() => {
 				this.$refs.shopcart.drop(target);
@@ -130,6 +133,7 @@ export default {
 		},
 		selectFood(food, event) {
 			this.selectedFood = food;
+			this.$refs.food.show();
 		}
 	},
 	components: {
