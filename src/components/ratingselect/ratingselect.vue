@@ -1,11 +1,11 @@
 <template lang="html">
     <div class="ratingselect">
         <div class="rating-type border-1px">
-            <span class="block positive" :class="{'active': selectType === 0}">{{desc.all}}<span class="count">1</span></span>
-            <span class="block positive" :class="{'active': selectType === 1}">{{desc.positive}}<span class="count">2</span></span>
-            <span class="block negative" :class="{'active': selectType === 2}">{{desc.negative}}<span class="count">3</span></span>
+            <span class="block positive" :class="{'active': selectType === 0}" @click="select(0, $event)">{{desc.all}}<span class="count" v-text="ratings.length"></span></span>
+            <span class="block positive" :class="{'active': selectType === 1}" @click="select(1, $event)">{{desc.positive}}<span class="count" v-text="positives.length"></span></span>
+            <span class="block negative" :class="{'active': selectType === 2}" @click="select(2, $event)">{{desc.negative}}<span class="count" v-text="negatives.length"></span></span>
         </div>
-        <div class="switch" :class="{'on': onlyContent}">
+        <div class="switch" :class="{'on': onlyContent}" @click="toggleContent">
             <span class="icon-check_circle"></span>
             <span class="text">只看有内容的评价</span>
         </div>
@@ -43,6 +43,34 @@ export default {
                     negative: '不满意'
                 }
             }
+        }
+    },
+    computed: {
+        // 好评
+        positives() {
+            return this.ratings.filter(rating => {
+                return rating.rateType === POSITIVE;
+            });
+        },
+        // 差评
+        negatives() {
+            return this.ratings.filter(rating => {
+                return rating.rateType === NEGATIVE;
+            });
+        }
+    },
+    methods: {
+        select(type, event) {
+            if (!event._constructed) {
+                return;
+            }
+            this.$emit('selectedType', type);
+        },
+        toggleContent() {
+            if (!event._constructed) {
+                return;
+            }
+            this.$emit('toggle');
         }
     }
 }
