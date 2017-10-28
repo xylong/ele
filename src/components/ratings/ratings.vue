@@ -1,7 +1,5 @@
 <template lang="html">
-    <div>
-        评论
-    </div>
+
 </template>
 
 <script>
