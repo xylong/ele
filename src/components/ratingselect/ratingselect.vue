@@ -1,9 +1,9 @@
 <template lang="html">
     <div class="ratingselect">
         <div class="rating-type border-1px">
-            <span class="block positive" :class="{'active': selectType === 0}" @click="select(0, $event)">{{desc.all}}<span class="count" v-text="ratings.length"></span></span>
-            <span class="block positive" :class="{'active': selectType === 1}" @click="select(1, $event)">{{desc.positive}}<span class="count" v-text="positives.length"></span></span>
-            <span class="block negative" :class="{'active': selectType === 2}" @click="select(2, $event)">{{desc.negative}}<span class="count" v-text="negatives.length"></span></span>
+            <span class="block positive" :class="{'active': selectType === 2}" @click="select(2, $event)">{{desc.all}}<span class="count" v-text="ratings.length"></span></span>
+            <span class="block positive" :class="{'active': selectType === 0}" @click="select(0, $event)">{{desc.positive}}<span class="count" v-text="positives.length"></span></span>
+            <span class="block negative" :class="{'active': selectType === 1}" @click="select(1, $event)">{{desc.negative}}<span class="count" v-text="negatives.length"></span></span>
         </div>
         <div class="switch" :class="{'on': onlyContent}" @click="toggleContent">
             <span class="icon-check_circle"></span>
@@ -13,9 +13,9 @@
 </template>
 
 <script>
-const ALL = 0;
-const POSITIVE = 1;
-const NEGATIVE =2;
+const ALL = 2;
+const POSITIVE = 0;
+const NEGATIVE =1;
 
 export default {
     name:'ratingselect',

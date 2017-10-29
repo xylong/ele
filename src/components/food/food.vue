@@ -32,24 +32,24 @@
                 <div class="rating">
                     <h1 class="title">商品评价</h1>
                     <ratingselect @selectedType="selectRatingType" @toggle="toggleContent" :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
+                    <!-- 评论列表 -->
                     <div class="rating-wrapper">
                         <ul v-show="food.ratings && food.ratings.length">
-                            <li v-for="v in food.ratings" class="rating-item">
+                            <li v-for="v in food.ratings" class="rating-item" v-show="isShow(v.rateType, v.text)">
                                 <div class="user">
                                     <span class="name" v-text="v.username"></span>
                                     <img :src="v.avatar" class="avatar" width="12" height="12" />
                                 </div>
-                                <div class="time" v-text="v.rateTime"></div>
+                                <div class="time">{{v.rateTime | formatDate}}</div>
                                 <p class="text">
-                                    <span :class="{'icon-thumb_up': v.rateType === 1, 'icon-thumb_down': v.rateType === 2}"></span>
+                                    <span :class="{'icon-thumb_up': v.rateType === 0, 'icon-thumb_down': v.rateType === 1}"></span>
                                     {{v.text}}
                                 </p>
                             </li>
                         </ul>
-                        <div class="no-rating" v-show="!food.ratings || food.ratings.length === 0">
-
-                        </div>
+                        <div class="no-rating" v-show="!food.ratings || food.ratings.length === 0">暂无评价</div>
                     </div>
+                    <!-- 评论列表🔚 -->
                 </div>
 	    	</div>
 	    </div>
@@ -59,13 +59,14 @@
 <script>
 import Vue from 'vue'
 import BScroll from 'better-scroll'
+import {formatDate} from '@/common/js/date'
 import cartcontrol from '@/components/cartcontrol/cartcontrol'
 import split from '@/components/split/split'
 import ratingselect from '@/components/ratingselect/ratingselect'
 
-const ALL = 0;
-const POSITIVE = 1;
-const NEGATIVE =2;
+const ALL = 2;
+const POSITIVE = 0;
+const NEGATIVE =1;
 
 export default {
 	name: 'food',
@@ -118,10 +119,39 @@ export default {
 		},
         selectRatingType(type) {
             this.selectType = type;
+            this.$nextTick(() => {
+            	this.scroll.refresh();
+            });
         },
         toggleContent() {
             this.onlyContent = !this.onlyContent;
+            this.$nextTick(() => {
+            	this.scroll.refresh();
+            });
+        },
+        /**
+         * 评论列表展示过滤
+         * @param  {boolean}  type
+         * @param  {string}  text 评论内容
+         * @return {Boolean}
+         */
+        isShow(type, text) {
+        	// 是否要显示内容and有内容
+        	if (this.onlyContent && !text) {
+        		return false;
+        	}
+        	if (this.selectType === ALL) {
+        		return true;
+        	} else {
+        		return type === this.selectType;
+        	}
         }
+	},
+	filters: {
+		formatDate(time) {
+			let date = new Date(time);
+			return formatDate(date, 'yyyy-MM-dd hh:mm');
+		}
 	},
 	components: {
         ratingselect,
@@ -132,6 +162,8 @@ export default {
 </script>
 
 <style lang="stylus" rel="stylesheet/stylus">
+@import '../../common/stylus/mixin'
+
 .food
 	position fixed
 	left 0
@@ -232,4 +264,45 @@ export default {
 			margin-left 18px
 			font-size 14px
 			color rgb(7, 17, 27)
+		.rating-wrapper
+			padding 18px
+			.rating-item
+				position relative
+				padding 16px 0
+				border-1px(rgba(7, 17, 27, 0.1))
+				.user
+					position absolute
+					right 0
+					top 16px
+					line-height 12px
+					font-size 0
+					.name
+						display inline-block
+						margin-right 6px
+						vertical-align top
+						font-size 10px
+						color rgb(147, 153, 159)
+					.avatar
+						border-radius 50%
+				.time
+					margin-bottom 6px
+					line-height 12px
+					font-size 10px
+					color rgb(147, 153, 159)
+				.text
+					line-height 16px
+					font-size 12px
+					color rgb(7, 17, 27)
+					.icon-thumb_up, .icon-thumb_down
+						margin-right 48px
+						line-height 24px
+						font-size 12px
+					.icon-thumb_up
+						color rgb(0, 160, 220)
+					.icon-thumb_down
+						color rgb(147, 153, 159)
+			.no-rating
+				padding 16px 0
+				font-size 12px
+				color rgb(147, 153, 159)
 </style>
